@@ -56,10 +56,14 @@ type Configuration struct {
 	EnableDataRetention      bool              `json:"enable_data_retention" mapstructure:"enable_data_retention"`
 	DataRetentionDays        int               `json:"data_retention_days" mapstructure:"data_retention_days"`
 	TeammateNameDisplay      string            `json:"teammate_name_display" mapstructure:"teammateNameDisplay"`
-	ShowEmailAddress         bool              `json:"show_email_address" mapstructure:"showEmailAddress"`
-	ShowFullName             bool              `json:"show_full_name" mapstructure:"showFullName"`
+        ShowEmailAddress         bool              `json:"show_email_address" mapstructure:"showEmailAddress"`
+        ShowFullName             bool              `json:"show_full_name" mapstructure:"showFullName"`
 
-	AuthMode string `json:"authMode" mapstructure:"authMode"`
+        AIURL    string `json:"ai_url" mapstructure:"ai_url"`
+        AIModel  string `json:"ai_model" mapstructure:"ai_model"`
+        AIAPIKey string `json:"ai_api_key" mapstructure:"ai_api_key"`
+
+        AuthMode string `json:"authMode" mapstructure:"authMode"`
 
 	LoggingCfgFile string `json:"logging_cfg_file" mapstructure:"logging_cfg_file"`
 	LoggingCfgJSON string `json:"logging_cfg_json" mapstructure:"logging_cfg_json"`
@@ -107,9 +111,12 @@ func ReadConfigFile(configFilePath string) (*Configuration, error) {
 	viper.SetDefault("FeatureFlags", map[string]string{})
 	viper.SetDefault("DataRetentionDays", 365) // 1 year is default
 	viper.SetDefault("PrometheusAddress", "")
-	viper.SetDefault("TeammateNameDisplay", "username")
-	viper.SetDefault("ShowEmailAddress", false)
-	viper.SetDefault("ShowFullName", false)
+        viper.SetDefault("TeammateNameDisplay", "username")
+        viper.SetDefault("ShowEmailAddress", false)
+        viper.SetDefault("ShowFullName", false)
+        viper.SetDefault("AIURL", "")
+        viper.SetDefault("AIModel", "")
+        viper.SetDefault("AIAPIKey", "")
 
 	err := viper.ReadInConfig() // Find and read the config file
 	if err != nil {             // Handle errors reading the config file
