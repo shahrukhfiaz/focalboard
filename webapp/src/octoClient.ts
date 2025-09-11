@@ -731,6 +731,20 @@ class OctoClient {
         return this.getBoardsWithPath(path)
     }
 
+    async generateTemplate(prompt: string, teamId?: string): Promise<Board | null> {
+        const path = this.teamPath(teamId) + '/templates/generate'
+        const body = JSON.stringify({prompt})
+        const response = await fetch(this.getBaseURL() + path, {
+            method: 'POST',
+            headers: this.headers(),
+            body,
+        })
+        if (response.status !== 200) {
+            return null
+        }
+        return this.getJson<Board>(response, {} as Board)
+    }
+
     async getBoards(): Promise<Board[]> {
         const path = this.teamPath() + '/boards'
         return this.getBoardsWithPath(path)

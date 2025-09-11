@@ -13,6 +13,36 @@ import (
 
 func (a *API) registerTemplatesRoutes(r *mux.Router) {
 	r.HandleFunc("/teams/{teamID}/templates", a.sessionRequired(a.handleGetTemplates)).Methods("GET")
+	r.HandleFunc("/teams/{teamID}/templates/generate", a.sessionRequired(a.handleGenerateTemplate)).Methods("POST")
+}
+
+type generateTemplateRequest struct {
+	Prompt string `json:"prompt"`
+}
+
+func (a *API) handleGenerateTemplate(w http.ResponseWriter, r *http.Request) {
+	teamID := mux.Vars(r)["teamID"]
+	userID := getUserID(r)
+
+	var req generateTemplateRequest
+	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+		a.errorResponse(w, r, err)
+		return
+	}
+
+	board, err := a.app.GenerateTemplate(teamID, userID, req.Prompt)
+	if err != nil {
+		a.errorResponse(w, r, err)
+		return
+	}
+
+	data, err := json.Marshal(board)
+	if err != nil {
+		a.errorResponse(w, r, err)
+		return
+	}
+
+	jsonBytesResponse(w, http.StatusOK, data)
 }
 
 func (a *API) handleGetTemplates(w http.ResponseWriter, r *http.Request) {
